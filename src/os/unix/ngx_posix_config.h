@@ -126,6 +126,8 @@ typedef struct aiocb  ngx_aiocb_t;
 
 #define NGX_LISTEN_BACKLOG  511
 
+#define ngx_debug_init()
+
 
 #if (__FreeBSD__) && (__FreeBSD_version < 400017)
 

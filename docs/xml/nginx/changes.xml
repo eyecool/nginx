@@ -9,32 +9,241 @@
 <title lang="en">nginx changelog</title>
 
 
-<changes ver="1.0.12" date="06.02.2012">
+<changes ver="1.1.16" date="29.02.2012">
 
-<change type="feature">
+<change type="change">
 <para lang="ru">
-параметры TLSv1.1 и TLSv1.2 в директиве ssl_protocols.
+ограничение на количество одновременных подзапросов поднято до 200.
 </para>
 <para lang="en">
-the "TLSv1.1" and "TLSv1.2" parameters of the "ssl_protocols" directive.
+the simultaneous subrequest limit has been raised to 200.
 </para>
 </change>
 
 <change type="feature">
 <para lang="ru">
-SSI команда if поддерживает выделения в регулярных выражениях.
+параметр from в директиве disable_symlinks.
 </para>
 <para lang="en">
-the "if" SSI command supports captures in regular expressions.
+the "from" parameter of the "disable_symlinks" directive.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+директивы return и error_page теперь могут использоваться для возврата
+перенаправлений с кодом 307.
+</para>
+<para lang="en">
+the "return" and "error_page" directives can now be used to return 307
+redirections.
 </para>
 </change>
 
 <change type="bugfix">
 <para lang="ru">
-SSI команда if не работала внутри команды block.
+в рабочем процессе мог произойти segmentation fault,
+если использовалась директива resolver
+и на глобальном уровне не была задана директива error_log.<br/>
+Спасибо Роману Арутюняну.
 </para>
 <para lang="en">
-the "if" SSI command did not work inside the "block" command.
+a segmentation fault might occur in a worker process
+if the "resolver" directive was used
+and there was no "error_log" directive specified at global level.<br/>
+Thanks to Roman Arutyunyan.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в рабочем процессе мог произойти segmentation fault,
+если использовались директивы "proxy_http_version 1.1" или
+"fastcgi_keep_conn on".
+</para>
+<para lang="en">
+a segmentation fault might occur in a worker process
+if the "proxy_http_version 1.1" or "fastcgi_keep_conn on" directives
+were used.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+утечек памяти.<br/>
+Спасибо Lanshun Zhou.
+</para>
+<para lang="en">
+memory leaks.<br/>
+Thanks to Lanshun Zhou.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в директиве disable_symlinks.
+</para>
+<para lang="en">
+in the "disable_symlinks" directive.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+при использовании ZFS размер кэша на диске мог считаться некорректно;
+ошибка появилась в 1.0.1.
+</para>
+<para lang="en">
+on ZFS filesystem disk cache size might be calculated incorrectly;
+the bug had appeared in 1.0.1.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+nginx не собирался компилятором icc 12.1.
+</para>
+<para lang="en">
+nginx could not be built by the icc 12.1 compiler.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+nginx не собирался gcc на Solaris;
+ошибка появилась в 1.1.15.
+</para>
+<para lang="en">
+nginx could not be built by gcc on Solaris;
+the bug had appeared in 1.1.15.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.1.15" date="15.02.2012">
+
+<change type="feature">
+<para lang="ru">
+директива disable_symlinks.
+</para>
+<para lang="en">
+the "disable_symlinks" directive.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+директивы proxy_cookie_domain и proxy_cookie_path.
+</para>
+<para lang="en">
+the "proxy_cookie_domain" and "proxy_cookie_path" directives.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+nginx мог некорректно сообщать об ошибке "upstream prematurely closed
+connection" вместо "upstream sent too big header".<br/>
+Спасибо Feibo Li.
+</para>
+<para lang="en">
+nginx might log incorrect error "upstream prematurely closed connection"
+instead of correct "upstream sent too big header" one.<br/>
+Thanks to Feibo Li.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+nginx не собирался с модулем ngx_http_perl_module,
+если использовался параметр --with-openssl.
+</para>
+<para lang="en">
+nginx could not be built with the ngx_http_perl_module
+if the --with-openssl option was used.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+количество внутренних перенаправлений в именованные location'ы
+не ограничивалось.
+</para>
+<para lang="en">
+the number of internal redirects to named locations was not limited.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+вызов $r->flush() несколько раз подряд мог приводить к ошибкам
+в модуле ngx_http_gzip_filter_module.
+</para>
+<para lang="en">
+calling $r->flush() multiple times might cause errors
+in the ngx_http_gzip_filter_module.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+при использовании директивы proxy_store с SSI-подзапросами
+временные файлы могли не удаляться.
+</para>
+<para lang="en">
+temporary files might be not removed
+if the "proxy_store" directive was used with SSI includes.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в некоторых случаях некэшируемые переменные (такие, как $args)
+возвращали старое пустое закэшированное значение.
+</para>
+<para lang="en">
+in some cases non-cacheable variables (such as the $args variable)
+returned old empty cached value.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в рабочем процессе мог произойти segmentation fault,
+если одновременно создавалось слишком много SSI-подзапросов;
+ошибка появилась в 0.7.25.
+</para>
+<para lang="en">
+a segmentation fault might occur in a worker process
+if too many SSI subrequests were issued simultaneously;
+the bug had appeared in 0.7.25.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.1.14" date="30.01.2012">
+
+<change type="feature">
+<para lang="ru">
+теперь можно указать несколько ограничений limit_req одновременно.
+</para>
+<para lang="en">
+multiple "limit_req" limits may be used simultaneously.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в обработке ошибок при соединении с бэкендом.<br/>
+Спасибо Piotr Sikora.
+</para>
+<para lang="en">
+in error handling while connecting to a backend.<br/>
+Thanks to Piotr Sikora.
 </para>
 </change>
 
@@ -58,30 +267,55 @@ in the OpenSSL library initialization.
 
 <change type="bugfix">
 <para lang="ru">
-директива worker_cpu_affinity могла не работать.
+директивы proxy_redirect могли наследоваться некорректно.
 </para>
 <para lang="en">
-the "worker_cpu_affinity" directive might not work.
+the "proxy_redirect" directives might be inherited incorrectly.
 </para>
 </change>
 
 <change type="bugfix">
 <para lang="ru">
-директивы limit_conn_log_level и limit_req_log_level могли не работать.
+утечки памяти при переконфигурации, если использовалась директива pcre_jit.
 </para>
 <para lang="en">
-the "limit_conn_log_level" and "limit_req_log_level" directives might not work.
+memory leak during reconfiguration if the "pcre_jit" directive was used.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.1.13" date="16.01.2012">
+
+<change type="feature">
+<para lang="ru">
+параметры TLSv1.1 и TLSv1.2 в директиве ssl_protocols.
+</para>
+<para lang="en">
+the "TLSv1.1" and "TLSv1.2" parameters of the "ssl_protocols" directive.
 </para>
 </change>
 
 <change type="bugfix">
 <para lang="ru">
-директива read_ahead могла не работать при использовании совместно с 
-try_files и open_file_cache. 
+параметры директивы limit_req наследовались некорректно;
+ошибка появилась в 1.1.12.
 </para>
 <para lang="en">
-the "read_ahead" directive might not work combined with "try_files"
-and "open_file_cache".
+the "limit_req" directive parameters were not inherited correctly;
+the bug had appeared in 1.1.12.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+директива proxy_redirect некорректно обрабатывала заголовок Refresh
+при использовании регулярных выражений.
+</para>
+<para lang="en">
+the "proxy_redirect" directive incorrectly processed "Refresh" header
+if regular expression were used.
 </para>
 </change>
 
@@ -98,58 +332,95 @@ answer from cache if there were no live upstreams.
 
 <change type="bugfix">
 <para lang="ru">
-если в параметре inactive директивы proxy_cache_path
-было указано малое время,
-в рабочем процессе мог произойти segmentation fault.
+директива worker_cpu_affinity могла не работать.
 </para>
 <para lang="en">
-a segmentation fault might occur in a worker process
-if small time was used in the "inactive" parameter of
-the "proxy_cache_path" directive.
+the "worker_cpu_affinity" directive might not work.
 </para>
 </change>
 
 <change type="bugfix">
 <para lang="ru">
-ответы из кэша могли зависать.
+nginx не собирался на Solaris;
+ошибка появилась в 1.1.12.
 </para>
 <para lang="en">
-responses from cache might hang.
+nginx could not be built on Solaris;
+the bug had appeared in 1.1.12.
 </para>
 </change>
 
 <change type="bugfix">
 <para lang="ru">
-в обработке ошибок при соединении с бэкендом.<br/>
-Спасибо Piotr Sikora.
+в модуле ngx_http_mp4_module.
 </para>
 <para lang="en">
-in error handling while connecting to a backend.<br/>
-Thanks to Piotr Sikora.
+in the ngx_http_mp4_module.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.1.12" date="26.12.2011">
+
+<change type="change">
+<para lang="ru">
+после перенаправления запроса с помощью директивы error_page
+директива proxy_pass без URI теперь использует изменённый URI.<br/>
+Спасибо Lanshun Zhou.
+</para>
+<para lang="en">
+a "proxy_pass" directive without URI part now uses changed URI
+after redirection with the "error_page" directive.<br/>
+Thanks to Lanshun Zhou.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+директивы proxy/fastcgi/scgi/uwsgi_cache_lock,
+proxy/fastcgi/scgi/uwsgi_cache_lock_timeout.
+</para>
+<para lang="en">
+the "proxy/fastcgi/scgi/uwsgi_cache_lock",
+"proxy/fastcgi/scgi/uwsgi_cache_lock_timeout" directives.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+директива pcre_jit.
+</para>
+<para lang="en">
+the "pcre_jit" directive.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+SSI команда if поддерживает выделения в регулярных выражениях.
+</para>
+<para lang="en">
+the "if" SSI command supports captures in regular expressions.
 </para>
 </change>
 
 <change type="bugfix">
 <para lang="ru">
-в методе epoll.<br/>
-Спасибо Yichun Zhang.
+SSI команда if не работала внутри команды block.
 </para>
 <para lang="en">
-in the "epoll" event method.<br/>
-Thanks to Yichun Zhang.
+the "if" SSI command did not work inside the "block" command.
 </para>
 </change>
 
 <change type="bugfix">
 <para lang="ru">
-переменная $sent_http_cache_control могла содержать неверное значение при
-использовании директивы expires.<br/>
-Спасибо Yichun Zhang.
+директивы limit_conn_log_level и limit_req_log_level могли не работать.
 </para>
 <para lang="en">
-the $sent_http_cache_control variable might contain a wrong value if the
-"expires" directive was used.<br/>
-Thanks to Yichun Zhang.
+the "limit_conn_log_level" and "limit_req_log_level" directives might not work.
 </para>
 </change>
 
@@ -177,12 +448,25 @@ if the "limit_rate" directive was used.
 
 <change type="bugfix">
 <para lang="ru">
-nginx не собирался на Solaris;
-ошибка появилась в 1.0.11.
+если в директиве proxy_pass использовались переменные и не был указан URI,
+всегда использовался URI исходного запроса.
 </para>
 <para lang="en">
-nginx could not be built on Solaris;
-the bug had appeared in 1.0.11.
+a "proxy_pass" directive without URI part always used original request URI
+if variables were used.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+после перенаправления запроса с помощью директивы try_files
+директива proxy_pass без URI могла использовать URI исходного запроса.<br/>
+Спасибо Lanshun Zhou.
+</para>
+<para lang="en">
+a "proxy_pass" directive without URI part might use original request
+after redirection with the "try_files" directive.<br/>
+Thanks to Lanshun Zhou.
 </para>
 </change>
 
@@ -204,10 +488,135 @@ in the ngx_http_mp4_module.
 </para>
 </change>
 
+<change type="bugfix">
+<para lang="ru">
+nginx не собирался на Solaris;
+ошибка появилась в 1.1.9.
+</para>
+<para lang="en">
+nginx could not be built on Solaris;
+the bug had appeared in 1.1.9.
+</para>
+</change>
+
 </changes>
 
 
-<changes ver="1.0.11" date="15.12.2011">
+<changes ver="1.1.11" date="12.12.2011">
+
+<change type="feature">
+<para lang="ru">
+параметр so_keepalive в директиве listen.<br/>
+Спасибо Всеволоду Стахову.
+</para>
+<para lang="en">
+the "so_keepalive" parameter of the "listen" directive.<br/>
+Thanks to Vsevolod Stakhov.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+параметр if_not_empty в директивах fastcgi/scgi/uwsgi_param.
+</para>
+<para lang="en">
+the "if_not_empty" parameter of the "fastcgi/scgi/uwsgi_param" directives.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+переменная $https.
+</para>
+<para lang="en">
+the $https variable.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+директива proxy_redirect поддерживает переменные в первом параметре.
+</para>
+<para lang="en">
+the "proxy_redirect" directive supports variables in the first parameter.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+директива proxy_redirect поддерживает регулярные выражения.
+</para>
+<para lang="en">
+the "proxy_redirect" directive supports regular expressions.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+переменная $sent_http_cache_control могла содержать неверное значение при
+использовании директивы expires.<br/>
+Спасибо Yichun Zhang.
+</para>
+<para lang="en">
+the $sent_http_cache_control variable might contain a wrong value if the
+"expires" directive was used.<br/>
+Thanks to Yichun Zhang.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+директива read_ahead могла не работать при использовании совместно с 
+try_files и open_file_cache. 
+</para>
+<para lang="en">
+the "read_ahead" directive might not work combined with "try_files"
+and "open_file_cache".
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+если в параметре inactive директивы proxy_cache_path
+было указано малое время,
+в рабочем процессе мог произойти segmentation fault.
+</para>
+<para lang="en">
+a segmentation fault might occur in a worker process
+if small time was used in the "inactive" parameter of
+the "proxy_cache_path" directive.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+ответы из кэша могли зависать.
+</para>
+<para lang="en">
+responses from cache might hang.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.1.10" date="30.11.2011">
+
+<change type="bugfix">
+<para lang="ru">
+при использовании AIO на Linux в рабочем процессе происходил segmentation fault;
+ошибка появилась в 1.1.9.
+</para>
+<para lang="en">
+a segmentation fault occured in a worker process if AIO was used on Linux;
+the bug had appeared in 1.1.9.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.1.9" date="28.11.2011">
 
 <change type="change">
 <para lang="ru">
@@ -222,10 +631,23 @@ Thanks to Zaur Abasmirzoev.
 
 <change type="feature">
 <para lang="ru">
-директива image_filter_sharpen.
+параметр valid в директиве resolver.  По умолчанию теперь
+используется TTL, возвращённый DNS-сервером.<br/>
+Спасибо Кириллу Коринскому.
 </para>
 <para lang="en">
-the "image_filter_sharpen" directive.
+the "valid" parameter of the "resolver" directive.  By default TTL
+returned by a DNS server is used.<br/>
+Thanks to Kirill A. Korinskiy.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+nginx мог перестать отвечать, если рабочий процесс завершался аварийно.
+</para>
+<para lang="en">
+nginx might hang after a worker process abnormal termination.
 </para>
 </change>
 
@@ -233,12 +655,25 @@ the "image_filter_sharpen" directive.
 <para lang="ru">
 в рабочем процессе мог произойти segmentation fault,
 если использовалось SNI;
-ошибка появилась в 1.0.9.
+ошибка появилась в 1.1.2.
 </para>
 <para lang="en">
 a segmentation fault might occur in a worker process
 if SNI was used;
-the bug had appeared in 1.0.9.
+the bug had appeared in 1.1.2.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в директиве keepalive_disable;
+ошибка появилась в 1.1.8.<br/>
+Спасибо Александру Усову.
+</para>
+<para lang="en">
+in the "keepalive_disable" directive;
+the bug had appeared in 1.1.8.<br/>
+Thanks to Alexander Usov.
 </para>
 </change>
 
@@ -246,25 +681,22 @@ the bug had appeared in 1.0.9.
 <para lang="ru">
 сигнал SIGWINCH переставал работать после первого обновления исполняемого
 файла;
-ошибка появилась в 1.0.9.
+ошибка появилась в 1.1.1.
 </para>
 <para lang="en">
 SIGWINCH signal did not work after first binary upgrade;
-the bug had appeared in 1.0.9.
+the bug had appeared in 1.1.1.
 </para>
 </change>
 
 <change type="bugfix">
 <para lang="ru">
-строки "If-Modified-Since", "If-Range" и им подобные в заголовке запроса
-клиента могли передаваться бэкенду при кэшировании; или не передаваться при
-выключенном кэшировании, если кэширование было включено в другой части
-конфигурации.
+теперь ответы бэкендов, длина которых не соответствует заголовку
+Content-Length, не кэширутся.
 </para>
 <para lang="en">
-the "If-Modified-Since", "If-Range", etc. client request header lines
-might be passed to backend while caching; or not passed without caching
-if caching was enabled in another part of the configuration.
+backend responses with length not matching "Content-Length" header line
+are no longer cached.
 </para>
 </change>
 
@@ -279,21 +711,12 @@ in the "scgi_param" directive, if complex parameters were used.
 
 <change type="bugfix">
 <para lang="ru">
-директивы add_header и expires не работали для ответов с кодом 206,
-если запрос проксировался.
+в методе epoll.<br/>
+Спасибо Yichun Zhang.
 </para>
 <para lang="en">
-"add_header" and "expires" directives did not work if a request was proxied
-and response status code was 206.
-</para>
-</change>
-
-<change type="bugfix">
-<para lang="ru">
-в директиве "expires @time".
-</para>
-<para lang="en">
-in the "expires @time" directive.
+in the "epoll" event method.<br/>
+Thanks to Yichun Zhang.
 </para>
 </change>
 
@@ -319,6 +742,27 @@ in the ngx_http_mp4_module.
 
 <change type="bugfix">
 <para lang="ru">
+теперь nginx понимает IPv6-адреса в строке запроса и в заголовке Host.
+</para>
+<para lang="en">
+IPv6 addresses are now handled properly in a request line and in a "Host"
+request header line.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+директивы add_header и expires не работали для ответов с кодом 206,
+если запрос проксировался.
+</para>
+<para lang="en">
+"add_header" and "expires" directives did not work if a request was proxied
+and response status code was 206.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
 nginx не собирался на FreeBSD 10.
 </para>
 <para lang="en">
@@ -338,7 +782,44 @@ nginx could not be built on AIX.
 </changes>
 
 
-<changes ver="1.0.10" date="15.11.2011">
+<changes ver="1.1.8" date="14.11.2011">
+
+<change type="change">
+<para lang="ru">
+модуль ngx_http_limit_zone_module переименован в ngx_http_limit_conn_module.
+</para>
+<para lang="en">
+the ngx_http_limit_zone_module was renamed to the ngx_http_limit_conn_module.
+</para>          
+</change>
+
+<change type="change">
+<para lang="ru">
+директива limit_zone заменена директивой limit_conn_zone с новым синтаксисом.
+</para>
+<para lang="en">
+the "limit_zone" directive was superseded by the "limit_conn_zone" directive
+with a new syntax.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+поддержка ограничения по нескольким limit_conn на одном уровне.
+</para>
+<para lang="en">
+support for multiple "limit_conn" limits on the same level.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+директива image_filter_sharpen.
+</para>
+<para lang="en">
+the "image_filter_sharpen" directive.
+</para>
+</change>
 
 <change type="bugfix">
 <para lang="ru">
@@ -368,6 +849,20 @@ the bug had appeared in 1.0.4.
 
 <change type="bugfix">
 <para lang="ru">
+строки "If-Modified-Since", "If-Range" и им подобные в заголовке запроса
+клиента могли передаваться бэкенду при кэшировании; или не передаваться при
+выключенном кэшировании, если кэширование было включено в другой части
+конфигурации.
+</para>
+<para lang="en">
+the "If-Modified-Since", "If-Range", etc. client request header lines
+might be passed to backend while caching; or not passed without caching
+if caching was enabled in another part of the configuration.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
 модуль ngx_http_mp4_module выдавал неверную строку "Content-Length"
 в заголовке ответа, использовался аргумент start.<br/>
 Спасибо Piotr Sikora.
@@ -382,7 +877,93 @@ Thanks to Piotr Sikora.
 </changes>
 
 
-<changes ver="1.0.9" date="01.11.2011">
+<changes ver="1.1.7" date="31.10.2011">
+
+<change type="feature">
+<para lang="ru">
+поддержка нескольких DNS серверов в директиве "resolver".<br/>
+Спасибо Кириллу Коринскому.
+</para>
+<para lang="en">
+support of several DNS servers in the "resolver" directive.<br/>
+Thanks to Kirill A. Korinskiy.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+на старте или во время переконфигурации происходил segmentation fault,
+если директива ssl использовалась на уровне http и не был указан
+ssl_certificate.
+</para>
+<para lang="en">
+a segmentation fault occurred on start or during reconfiguration 
+if the "ssl" directive was used at http level and there was
+no "ssl_certificate" defined.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+уменьшено потребление памяти при проксировании больших файлов,
+если они буферизировались на диск.
+</para>
+<para lang="en">
+reduced memory consumption while proxying big files
+if they were buffered to disk.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в рабочем процессе мог произойти segmentation fault,
+если использовалась директива "proxy_http_version 1.1".
+</para>
+<para lang="en">
+a segmentation fault might occur in a worker process
+if "proxy_http_version 1.1" directive was used.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в директиве "expires @time".
+</para>
+<para lang="en">
+in the "expires @time" directive.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.1.6" date="17.10.2011">
+
+<change>
+<para lang="ru">
+Изменение во внутреннем API: теперь при внутреннем редиректе
+в именованный location контексты модулей очищаются.<br/>
+По запросу Yichun Zhang.
+</para>
+<para lang="en">
+Change in internal API: now module context data are cleared
+while internal redirect to named location.<br/>
+Requested by Yichun Zhang.
+</para>
+</change>
+
+<change type="change">
+<para lang="ru">
+теперь если сервер, описанный в блоке upstream, был признан неработающим,
+то после истечения fail_timeout на него будет отправлен только один запрос;
+сервер будет считаться работающим, если успешно ответит на этот запрос.
+</para>
+<para lang="en">
+if a server in an upstream failed, only one request will be sent to it
+after fail_timeout; the server will be considered alive if it will
+successfully respond to the request.
+</para>
+</change>
 
 <change type="change">
 <para lang="ru">
@@ -390,15 +971,6 @@ Thanks to Piotr Sikora.
 </para>
 <para lang="en">
 now the 0x7F-0x1F characters are escaped as \xXX in an access_log.
-</para>
-</change>
-
-<change type="change">
-<para lang="ru">
-SIGWINCH сигнал теперь работает только в режиме демона.
-</para>
-<para lang="en">
-now SIGWINCH signal works only in daemon mode.
 </para>
 </change>
 
@@ -422,39 +994,6 @@ decrease of memory consumption if SSL is used.
 </para>
 </change>
 
-<change type="feature">
-<para lang="ru">
-теперь на NetBSD поддерживаются accept фильтры.
-</para>
-<para lang="en">
-accept filters are now supported on NetBSD.
-</para>
-</change>
-
-<change type="feature">
-<para lang="ru">
-директивы uwsgi_buffering и scgi_buffering.<br/>
-Спасибо Peter Smit.
-</para>
-<para lang="en">
-the "uwsgi_buffering" and "scgi_buffering" directives.<br/>
-Thanks to Peter Smit.
-</para>
-</change>
-
-<change type="bugfix">
-<para lang="ru">
-на старте или во время переконфигурации происходил segmentation fault,
-если директива ssl использовалась на уровне http и не был указан
-ssl_certificate.
-</para>
-<para lang="en">
-a segmentation fault occurred on start or while reconfiguration
-if the "ssl" directive was used at http level and there was
-no "ssl_certificate" defined.
-</para>
-</change>
-
 <change type="bugfix">
 <para lang="ru">
 некоторые UTF-8 символы обрабатывались неправильно.<br/>
@@ -468,7 +1007,7 @@ Thanks to Alexey Kuts.
 
 <change type="bugfix">
 <para lang="ru">
-директивы модуля ngx_http_rewrite_module, заданные на уровне server,
+директивы модуля ngx_http_rewrite_module, заданные на уровне server, 
 применялись повторно, если для запроса не находилось ни одного location'а.
 </para>
 <para lang="en">
@@ -515,6 +1054,22 @@ the module ngx_http_mp4_module did not support seeking on 32-bit platforms.
 </para>
 </change>
 
+</changes>
+
+
+<changes ver="1.1.5" date="05.10.2011">
+
+<change type="feature">
+<para lang="ru">
+директивы uwsgi_buffering и scgi_buffering.<br/>
+Спасибо Peter Smit.
+</para>
+<para lang="en">
+the "uwsgi_buffering" and "scgi_buffering" directives.<br/>
+Thanks to Peter Smit.
+</para>
+</change>
+
 <change type="bugfix">
 <para lang="ru">
 при использовании proxy_cache_bypass могли быть закэшированы
@@ -525,6 +1080,15 @@ the module ngx_http_mp4_module did not support seeking on 32-bit platforms.
 non-cacheable responses might be cached if "proxy_cache_bypass" directive
 was used.<br/>
 Thanks to John Ferlito.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в модуле ngx_http_proxy_module при работе с бэкендами по HTTP/1.1.
+</para>
+<para lang="en">
+in HTTP/1.1 support in the ngx_http_proxy_module.
 </para>
 </change>
 
@@ -561,60 +1125,45 @@ in the "return" directive.
 
 <change type="bugfix">
 <para lang="ru">
-директивы ssl_verify_client, ssl_verify_depth и ssl_prefer_server_cipher
-могли работать некорректно, если использовался SNI.
+при использовании директивы "ssl_session_cache builtin" происходил
+segmentation fault;
+ошибка появилась в 1.1.1.
 </para>
 <para lang="en">
-the "ssl_verify_client", "ssl_verify_depth", and "ssl_prefer_server_ciphers"
-directives might work incorrectly if SNI was used.
+the "ssl_session_cache builtin" directive caused segmentation fault;
+the bug had appeared in 1.1.1.
 </para>
 </change>
 
 </changes>
 
 
-<changes ver="1.0.8" date="01.10.2011">
+<changes ver="1.1.4" date="20.09.2011">
 
-<change type="bugfix">
+<change type="feature">
 <para lang="ru">
-nginx не собирался с модулем ngx_http_mp4_module и без параметра --with-debug.
+модуль ngx_http_upstream_keepalive.
 </para>
 <para lang="en">
-nginx could not be built --with-http_mp4_module and without --with-debug option.
-</para>
-</change>
-
-</changes>
-
-
-<changes ver="1.0.7" date="30.09.2011">
-
-<change type="change">
-<para lang="ru">
-теперь, если суммарный размер всех диапазонов больше размера исходного ответа,
-то nginx возвращает только исходный ответ, не обрабатывая диапазоны.
-</para>
-<para lang="en">
-now if total size of all ranges is greater than source response size,
-then nginx disables ranges and returns just the source response.
+the ngx_http_upstream_keepalive module.
 </para>
 </change>
 
 <change type="feature">
 <para lang="ru">
-директива max_ranges.
+директива proxy_http_version.
 </para>
 <para lang="en">
-the "max_ranges" directive.
+the "proxy_http_version" directive.
 </para>
 </change>
 
 <change type="feature">
 <para lang="ru">
-модуль ngx_http_mp4_module.
+директива fastcgi_keep_conn.
 </para>
 <para lang="en">
-the module ngx_http_mp4_module.
+the "fastcgi_keep_conn" directive.
 </para>
 </change>
 
@@ -653,6 +1202,38 @@ Thanks to Hagai Avrahami.
 
 <change type="bugfix">
 <para lang="ru">
+уменьшено потребление памяти для долгоживущих запросов.
+</para>
+<para lang="en">
+reduced memory consumption for long-lived requests.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+модуль ngx_http_mp4_module не поддерживал 64-битный MP4-атом co64.
+</para>
+<para lang="en">
+the module ngx_http_mp4_module did not support 64-bit MP4 "co64" atom.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.1.3" date="14.09.2011">
+
+<change type="feature">
+<para lang="ru">
+модуль ngx_http_mp4_module.
+</para>
+<para lang="en">
+the module ngx_http_mp4_module.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
 в Linux AIO, используемым совместно с open_file_cache.
 </para>
 <para lang="en">
@@ -673,10 +1254,46 @@ if file was not atomically changed.
 
 <change type="bugfix">
 <para lang="ru">
-уменьшено потребление памяти для долгоживущих запросов.
+nginx не собирался на MacOSX 10.7.
 </para>
 <para lang="en">
-reduced memory consumption for long-lived requests.
+nginx could not be built on MacOSX 10.7.
+</para>
+</change>
+
+</changes>
+
+
+<changes ver="1.1.2" date="05.09.2011">
+
+<change type="change">
+<para lang="ru">
+теперь, если суммарный размер всех диапазонов больше размера исходного ответа,
+то nginx возвращает только исходный ответ, не обрабатывая диапазоны.
+</para>
+<para lang="en">
+now if total size of all ranges is greater than source response size,
+then nginx disables ranges and returns just the source response.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+директива max_ranges.
+</para>
+<para lang="en">
+the "max_ranges" directive.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+директивы ssl_verify_client, ssl_verify_depth и ssl_prefer_server_cipher
+могли работать некорректно, если использовался SNI.
+</para>
+<para lang="en">
+the "ssl_verify_client", "ssl_verify_depth", and "ssl_prefer_server_ciphers"
+directives might work incorrectly if SNI was used.
 </para>
 </change>
 
@@ -689,12 +1306,70 @@ in the "proxy/fastcgi/scgi/uwsgi_ignore_client_abort" directives.
 </para>
 </change>
 
-<change type="bugfix">
+</changes>
+
+
+<changes ver="1.1.1" date="22.08.2011">
+
+<change type="change">
 <para lang="ru">
-nginx не собирался на MacOSX 10.7.
+теперь загрузчик кэша за каждую итерацию либо обрабатывает число файлов,
+указанное в параметре load_files, либо работает не дольше времени,
+указанного в параметре loader_threshold.
 </para>
 <para lang="en">
-nginx could not be built on MacOSX 10.7.
+now cache loader processes either as many files as specified by "loader_files"
+parameter or works no longer than time specified by the "loader_threshold"
+parameter during each iteration.
+</para>
+</change>
+
+<change type="change">
+<para lang="ru">
+SIGWINCH сигнал теперь работает только в режиме демона.
+</para>
+<para lang="en">
+now SIGWINCH signal works only in daemon mode.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+теперь разделяемые зоны и кэши используют семафоры POSIX на Solaris.<br/>
+Спасибо Денису Иванову.
+</para>
+<para lang="en">
+now shared zones and caches use POSIX semaphores on Solaris.<br/>
+Thanks to Den Ivanov.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+теперь на NetBSD поддерживаются accept фильтры.
+</para>
+<para lang="en">
+accept filters are now supported on NetBSD.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+nginx не собирался на Linux 3.0.
+</para>
+<para lang="en">
+nginx could not be built on Linux 3.0.
+</para>
+</change>
+
+<change type="bugfix">
+<para lang="ru">
+в некоторых случаях nginx не использовал сжатие;
+ошибка появилась в 1.1.0.
+</para>
+<para lang="en">
+nginx did not use gzipping in some cases;
+the bug had appeared in 1.1.0.
 </para>
 </change>
 
@@ -760,10 +1435,25 @@ if many backup servers were used in an upstream.
 </para>
 </change>
 
+<change type="bugfix">
+<para lang="ru">
+при использовании директив fastcgi/scgi/uwsgi_param
+со значениями, начинающимися со строки "HTTP_",
+в рабочем процессе мог произойти segmentation fault;
+ошибка появилась в 0.8.40.
+</para>
+<para lang="en">
+a segmentation fault might occur in a worker process
+if "fastcgi/scgi/uwsgi_param" directives were used
+with values starting with "HTTP_";
+the bug had appeared in 0.8.40.
+</para>
+</change>
+
 </changes>
 
 
-<changes ver="1.0.6" date="29.08.2011">
+<changes ver="1.1.0" date="01.08.2011">
 
 <change type="feature">
 <para lang="ru">
@@ -771,6 +1461,17 @@ if many backup servers were used in an upstream.
 </para>
 <para lang="en">
 cache loader run time decrease.
+</para>
+</change>
+
+<change type="feature">
+<para lang="ru">
+параметры loader_files, loader_sleep и loader_threshold
+директив proxy/fastcgi/scgi/uwsgi_cache_path.
+</para>
+<para lang="en">
+"loader_files", "loader_sleep", and "loader_threshold" options
+of the "proxy/fastcgi/scgi/uwsgi_cache_path" directives.
 </para>
 </change>
 
@@ -796,54 +1497,23 @@ Thanks to Adrian Kotelba.
 
 <change type="feature">
 <para lang="ru">
-директива lingering_close.
+директива lingering_close.<br/>
+Спасибо Максиму Дунину.
 </para>
 <para lang="en">
-the "lingering_close" directive.
-</para>
-</change>
-
-<change type="feature">
-<para lang="ru">
-теперь разделяемые зоны и кэши используют семафоры POSIX на Solaris.<br/>
-Спасибо Денису Иванову.
-</para>
-<para lang="en">
-now shared zones and caches use POSIX semaphores on Solaris.<br/>
-Thanks to Den Ivanov.
+the "lingering_close" directive.<br/>
+Thanks to Maxim Dounin.
 </para>
 </change>
 
 <change type="bugfix">
 <para lang="ru">
-nginx не собирался на Linux 3.0.
+закрытия соединения для pipelined-запросов.<br/>
+Спасибо Максиму Дунину.
 </para>
 <para lang="en">
-nginx could not be built on Linux 3.0.
-</para>
-</change>
-
-<change type="bugfix">
-<para lang="ru">
-при использовании директив fastcgi/scgi/uwsgi_param
-со значениями, начинающимися со строки "HTTP_",
-в рабочем процессе мог произойти segmentation fault;
-ошибка появилась в 0.8.40.
-</para>
-<para lang="en">
-a segmentation fault might occur in a worker process
-if "fastcgi/scgi/uwsgi_param" directives were used
-with values starting with "HTTP_";
-the bug had appeared in 0.8.40.
-</para>
-</change>
-
-<change type="bugfix">
-<para lang="ru">
-закрытия соединения для pipelined-запросов.
-</para>
-<para lang="en">
-in closing connection for pipelined requests.
+in closing connection for pipelined requests.<br/>
+Thanks to Maxim Dounin.
 </para>
 </change>
 
@@ -860,21 +1530,25 @@ nginx did not disable gzipping if client sent "gzip;q=0" in
 
 <change type="bugfix">
 <para lang="ru">
-таймаута при небуферизированном проксировании.
+таймаута при небуферизированном проксировании.<br/>
+Спасибо Максиму Дунину.
 </para>
 <para lang="en">
-in timeout in unbuffered proxied mode.
+in timeout in unbuffered proxied mode.<br/>
+Thanks to Maxim Dounin.
 </para>
 </change>
 
 <change type="bugfix">
 <para lang="ru">
 утечки памяти при использовании переменных в директиве proxy_pass
-при работе с бэкендом по HTTPS.
+при работе с бэкендом по HTTPS.<br/>
+Спасибо Максиму Дунину.
 </para>
 <para lang="en">
 memory leaks when a "proxy_pass" directive contains variables and proxies
-to an HTTPS backend.
+to an HTTPS backend.<br/>
+Thanks to Maxim Dounin.
 </para>
 </change>
 
@@ -891,10 +1565,12 @@ Thanks to Lanshun Zhou.
 
 <change type="bugfix">
 <para lang="ru">
-SSL не работал на QNX.
+SSL не работал на QNX.<br/>
+Спасибо Максиму Дунину.
 </para>
 <para lang="en">
-SSL did not work on QNX.
+SSL did not work on QNX.<br/>
+Thanks to Maxim Dounin.
 </para>
 </change>
 
@@ -1093,8 +1769,8 @@ proxy/fastcgi/scgi/uwsgi_cache_bypass и proxy/fastcgi/scgi/ uwsgi_no_cache
 ошибка появилась в 0.8.46.
 </para>
 <para lang="en">
-a cached response may be broken if proxy/fastcgi/scgi/ uwsgi_cache_bypass
-and proxy/fastcgi/scgi/uwsgi_no_cache directive values were different;
+a cached response may be broken if "proxy/fastcgi/scgi/ uwsgi_cache_bypass"
+and "proxy/fastcgi/scgi/uwsgi_no_cache" directive values were different;
 the bug had appeared in 0.8.46.
 </para>
 </change>
@@ -6805,7 +7481,7 @@ now nginx allows underscores in a client request header line names.
 значений по умолчанию.
 </para>
 <para lang="en">
-now the ssl_certificate and ssl_certificate_key directives have not
+now the ssl_certificate and ssl_certificate_key directives have no
 default values.
 </para>
 </change>

@@ -49,6 +49,8 @@ static ngx_int_t ngx_http_variable_server_port(ngx_http_request_t *r,
     ngx_http_variable_value_t *v, uintptr_t data);
 static ngx_int_t ngx_http_variable_scheme(ngx_http_request_t *r,
     ngx_http_variable_value_t *v, uintptr_t data);
+static ngx_int_t ngx_http_variable_https(ngx_http_request_t *r,
+    ngx_http_variable_value_t *v, uintptr_t data);
 static ngx_int_t ngx_http_variable_is_args(ngx_http_request_t *r,
     ngx_http_variable_value_t *v, uintptr_t data);
 static ngx_int_t ngx_http_variable_document_root(ngx_http_request_t *r,
@@ -157,6 +159,8 @@ static ngx_http_variable_t  ngx_http_core_variables[] = {
       offsetof(ngx_http_request_t, http_protocol), 0, 0 },
 
     { ngx_string("scheme"), NULL, ngx_http_variable_scheme, 0, 0, 0 },
+
+    { ngx_string("https"), NULL, ngx_http_variable_https, 0, 0, 0 },
 
     { ngx_string("request_uri"), NULL, ngx_http_variable_request,
       offsetof(ngx_http_request_t, unparsed_uri), 0, 0 },
@@ -428,7 +432,7 @@ ngx_http_get_flushed_variable(ngx_http_request_t *r, ngx_uint_t index)
 
     v = &r->variables[index];
 
-    if (v->valid) {
+    if (v->valid || v->not_found) {
         if (!v->no_cacheable) {
             return v;
         }
@@ -1103,6 +1107,30 @@ ngx_http_variable_scheme(ngx_http_request_t *r,
     v->no_cacheable = 0;
     v->not_found = 0;
     v->data = (u_char *) "http";
+
+    return NGX_OK;
+}
+
+
+static ngx_int_t
+ngx_http_variable_https(ngx_http_request_t *r,
+    ngx_http_variable_value_t *v, uintptr_t data)
+{
+#if (NGX_HTTP_SSL)
+
+    if (r->connection->ssl) {
+        v->len = sizeof("on") - 1;
+        v->valid = 1;
+        v->no_cacheable = 0;
+        v->not_found = 0;
+        v->data = (u_char *) "on";
+
+        return NGX_OK;
+    }
+
+#endif
+
+    *v = ngx_http_variable_null_value;
 
     return NGX_OK;
 }

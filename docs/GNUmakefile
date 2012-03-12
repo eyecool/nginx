@@ -24,6 +24,8 @@ define  XSLT
 endef
 
 
+all:		changes
+
 changes:	$(TEMP)/$(NGINX)/CHANGES.ru				\
 		$(TEMP)/$(NGINX)/CHANGES
 
@@ -53,4 +55,3 @@ $(TEMP)/$(NGINX)/CHANGES:	docs/xml/nginx/changes.xml		\
 docs/xslt/changes.xslt:		docs/xsls/changes.xsls
 
 	$(call XSLScript, docs/xsls/changes.xsls, $@)
-

@@ -6,7 +6,7 @@ TEMP =		tmp
 REPO =		$(shell svn info | sed -n 's/^Repository Root: //p')
 
 OBJS =		objs.msvc8
-OPENSSL =	openssl-0.9.8t
+OPENSSL =	openssl-1.0.0g
 ZLIB =		zlib-1.2.5
 PCRE =		pcre-8.21
 
@@ -46,8 +46,7 @@ RELEASE:
 	svn ci -F $(TEMP)/message
 
 	echo "release-$(VER) tag" > $(TEMP)/message
-	svn copy $(REPO)/branches/stable-1.0				\
-		$(REPO)/tags/release-$(VER)				\
+	svn copy $(REPO)/trunk $(REPO)/tags/release-$(VER)		\
 		-F $(TEMP)/message
 
 	svn up

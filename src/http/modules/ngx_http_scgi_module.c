@@ -941,8 +941,10 @@ ngx_http_scgi_process_header(ngx_http_request_t *r)
             h->value.data = h->key.data + h->key.len + 1;
             h->lowcase_key = h->key.data + h->key.len + 1 + h->value.len + 1;
 
-            ngx_cpystrn(h->key.data, r->header_name_start, h->key.len + 1);
-            ngx_cpystrn(h->value.data, r->header_start, h->value.len + 1);
+            ngx_memcpy(h->key.data, r->header_name_start, h->key.len);
+            h->key.data[h->key.len] = '\0';
+            ngx_memcpy(h->value.data, r->header_start, h->value.len);
+            h->value.data[h->value.len] = '\0';
 
             if (h->key.len == r->lowcase_index) {
                 ngx_memcpy(h->lowcase_key, r->lowcase_header, h->key.len);
@@ -1171,8 +1173,8 @@ ngx_http_scgi_merge_loc_conf(ngx_conf_t *cf, void *parent, void *child)
 
     if (conf->upstream.busy_buffers_size < size) {
         ngx_conf_log_error(NGX_LOG_EMERG, cf, 0,
-            "\"scgi_busy_buffers_size\" must be equal or bigger "
-            "than maximum of the value of \"scgi_buffer_size\" and "
+            "\"scgi_busy_buffers_size\" must be equal to or greater "
+            "than the maximum of the value of \"scgi_buffer_size\" and "
             "one of the \"scgi_buffers\"");
 
         return NGX_CONF_ERROR;
@@ -1202,8 +1204,8 @@ ngx_http_scgi_merge_loc_conf(ngx_conf_t *cf, void *parent, void *child)
 
     if (conf->upstream.temp_file_write_size < size) {
         ngx_conf_log_error(NGX_LOG_EMERG, cf, 0,
-            "\"scgi_temp_file_write_size\" must be equal or bigger than "
-            "maximum of the value of \"scgi_buffer_size\" and "
+            "\"scgi_temp_file_write_size\" must be equal to or greater than "
+            "the maximum of the value of \"scgi_buffer_size\" and "
             "one of the \"scgi_buffers\"");
 
         return NGX_CONF_ERROR;
@@ -1225,8 +1227,8 @@ ngx_http_scgi_merge_loc_conf(ngx_conf_t *cf, void *parent, void *child)
         && conf->upstream.max_temp_file_size < size) {
         ngx_conf_log_error(NGX_LOG_EMERG, cf, 0,
             "\"scgi_max_temp_file_size\" must be equal to zero to disable "
-            "the temporary files usage or must be equal or bigger than "
-            "maximum of the value of \"scgi_buffer_size\" and "
+            "temporary files usage or must be equal to or greater than "
+            "the maximum of the value of \"scgi_buffer_size\" and "
             "one of the \"scgi_buffers\"");
 
         return NGX_CONF_ERROR;

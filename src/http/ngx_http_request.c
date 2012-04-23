@@ -612,6 +612,8 @@ ngx_http_ssl_handshake_handler(ngx_connection_t *c)
 
         c->ssl->no_wait_shutdown = 1;
 
+        c->log->action = "reading client request line";
+
         c->read->handler = ngx_http_process_request_line;
         /* STUB: epoll edge */ c->write->handler = ngx_http_empty_handler;
 
@@ -1175,7 +1177,7 @@ ngx_http_read_request_header(ngx_http_request_t *r)
 
     if (n == 0) {
         ngx_log_error(NGX_LOG_INFO, c->log, 0,
-                      "client closed prematurely connection");
+                      "client prematurely closed connection");
     }
 
     if (n == 0 || n == NGX_ERROR) {
@@ -1493,7 +1495,9 @@ ngx_http_process_user_agent(ngx_http_request_t *r, ngx_table_elt_t *h,
         } else if (ngx_strstrn(user_agent, "Chrome/", 7 - 1)) {
             r->headers_in.chrome = 1;
 
-        } else if (ngx_strstrn(user_agent, "Safari/", 7 - 1)) {
+        } else if (ngx_strstrn(user_agent, "Safari/", 7 - 1)
+                   && ngx_strstrn(user_agent, "Mac OS X", 8 - 1))
+        {
             r->headers_in.safari = 1;
 
         } else if (ngx_strstrn(user_agent, "Konqueror", 9 - 1)) {
@@ -2424,7 +2428,7 @@ closed:
     }
 
     ngx_log_error(NGX_LOG_INFO, c->log, err,
-                  "client closed prematurely connection");
+                  "client prematurely closed connection");
 
     ngx_http_finalize_request(r, 0);
 }
